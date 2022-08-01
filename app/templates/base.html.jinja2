@@ -1,6 +1,15 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{% block title %}{% endblock %}</title>
+    <meta name="description" content="League of Legends players stat checker">
+    <meta name="author" content="Mikołaj Mróz">
+
+    <meta property="og:title" content="EZ.GG - Check your LOL stats!">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="http://lol-stats.eu-central-1.elasticbeanstalk.com/">
+    <meta property="og:description" content="League of Legends players stat checker">
+    <meta property="og:image" content="{{url_for('static', filename='meta/background.jpg')}}">
 
     <!-- Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -22,10 +31,10 @@
         {% block leftbar %}
         {% endblock %}
         </div>
-        <div class='center'>
+        <div class='top'>
             <div class='content'>
                 <div class='title'>
-                    <a href='http://127.0.0.1:5000'>OP.GG</a>
+                    <a href='{{url_for("index")}}'><img src="{{url_for('static', filename='meta/logo.png')}}"></a>
                 </div>
                 <form method="POST" action="/">
                     {{ form.csrf_token }}
@@ -46,18 +55,26 @@
                         </div>
                     </div>
                 </form>
+                {% block message %}
+                {% endblock %}
                 <div style='text-align: center; font-weight:400;'>
-                    A <a href='https://op.gg'>OP.GG</a> clone created by <a href='https://github.com/Mikolaj-Mroz'>Mikołaj Mróz</a> <br>
-                    Original design created by <a href='https://op.gg'>OP.GG</a>
+                    <small>
+                        A <a href='https://op.gg'>OP.GG</a> clone created by <a href='https://github.com/Mikolaj-Mroz'>Mikołaj Mróz</a> <br>
+                        Original design created by <a href='https://op.gg'>OP.GG</a>
+                    </small>
                 </div>
             </div>
+        </div>
+        <div class='center'>
             {% block content %}{% endblock %}
+        </div>
+        <div class='bot'>
             <footer>
                 <section>
                     <div>
-                        OP.GG <br>
+                        EZ.GG <br>
                         <br>
-                        About OP.GG <br>
+                        About EZ.GG <br>
                         Company <br>
                         Blog <br>
                         Logo history <br>
@@ -74,10 +91,8 @@
                     <div>
                         Apps <br>
                         <br>
-                        OP.GG Android App <br>
-                        OP.GG iOS App <br>
-                        IFI.GG Android App <br>
-                        IFI.GG iOS App <br>
+                        EZ.GG Android App <br>
+                        EZ.GG iOS App <br>
                     </div>
                     <div>
                         Resources <br>
@@ -86,6 +101,12 @@
                         Agreement <br>
                         Help <br>
                     </div>
+                </section>
+                <section style='margin-top:25px; width:1170px;'>
+                    <small>
+                    <hr>
+                        © 2012-2022 EZ.GG. EZ.GG isn’t endorsed by Riot Games and doesn’t reflect the views or opinions of Riot Games or anyone officially involved in producing or managing League of Legends. League of Legends and Riot Games are trademarks or registered trademarks of Riot Games, Inc. League of Legends © Riot Games, Inc.
+                    </small>
                 </section>
             </footer>
         </div>

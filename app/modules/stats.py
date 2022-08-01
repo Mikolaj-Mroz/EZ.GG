@@ -1,8 +1,13 @@
+from flask import url_for
 from riotwatcher import LolWatcher, ApiError
 import pickle
+import os
+import time
+from datetime import datetime
+
 
 # config
-api_key = 'RGAPI-7d500e80-ac9f-4b89-8b12-b94a307a5cea'
+api_key = 'RGAPI-e51c2666-0a73-40f2-90ed-4bf95bac1bc2'
 watcher = LolWatcher(api_key)
 
 # download champion names from data dragon
@@ -18,6 +23,7 @@ items_list = watcher.data_dragon.items('12.14.1', 'en_US')['data']
 class Player:
     def __init__(self, username, server):
         try: 
+            # load data if exists
             self.username = username
             self.load()
         except:
@@ -26,84 +32,78 @@ class Player:
     def get_data(self, username, server):
         self.username = username
         self.server = server
-        self.data = watcher.summoner.by_name(server, username)
-        self.solo = {}
-        self.flex = {}
-        watcherdata = watcher.league.by_summoner(server, self.data['id'])
-        if watcherdata:
-            if watcherdata[0]['queueType'] == 'RANKED_SOLO_5x5':
-                self.solo['tier'] = watcherdata[0]['tier'].lower()
-                self.solo['rank'] = watcherdata[0]['rank']
-                self.solo['lp'] = watcherdata[0]['leaguePoints']
-                self.solo['wins'] = watcherdata[0]['wins']
-                self.solo['losses'] = watcherdata[0]['losses']
-                self.solo['winrate'] = '{:.2f}'.format(self.solo['wins'] / (self.solo['wins'] + self.solo['losses']) * 100) + '%'
-                self.flex['tier'] = 'none'
-                self.flex['rank'] = 0
-                self.flex['lp'] = 0
-                self.flex['wins'] = 0
-                self.flex['losses'] = 0
-                self.flex['winrate'] = '0%'
+        self.error = 0
+        try:
+            self.data = watcher.summoner.by_name(server, username)
+            watcherdata = watcher.league.by_summoner(server, self.data['id'])
+            self.solo = {}
+            self.flex = {}
+            rank_data = ['tier','rank', 'leaguePoints', 'wins', 'losses']
+            # assign player rank data
+            if len(watcherdata) > 0:
+                if watcherdata[0]['queueType'] == 'RANKED_SOLO_5x5':
+                    for data in rank_data:
+                        self.solo[data] = watcherdata[0][data]
+                        self.flex[data] = 0
+                    self.solo['tier'] = self.solo['tier'].lower()
+                    self.solo['winrate'] = '{:.2f}'.format(self.solo['wins'] / (self.solo['wins'] + self.solo['losses']) * 100) + '%'
+                    self.flex['winrate'] = 0
+                else:
+                    for data in rank_data:
+                        self.flex[data] = watcherdata[0][data]
+                        self.solo[data] = 0
+                    self.flex['tier'] = self.flex['tier'].lower()
+                    self.flex['winrate'] = '{:.2f}'.format(self.flex['wins'] / (self.flex['wins'] + self.flex['losses']) * 100) + '%'
+                    self.solo['winrate'] = 0
 
-            elif watcherdata[0]['queueType'] == 'RANKED_FLEX_SR':
-                self.flex['tier'] = watcherdata[0]['tier'].lower()
-                self.flex['rank'] = watcherdata[0]['rank']
-                self.flex['lp'] = watcherdata[0]['leaguePoints']
-                self.flex['wins'] = watcherdata[0]['wins']
-                self.flex['losses'] = watcherdata[0]['losses']
-                self.flex['winrate'] = '{:.2f}'.format(self.flex['wins'] / (self.flex['wins'] + self.flex['losses']) * 100) + '%'
-                self.solo['tier'] = 'none'
-                self.solo['rank'] = 0
-                self.solo['lp'] = 0
-                self.solo['wins'] = 0
-                self.solo['losses'] = 0
-                self.solo['winrate'] = '0%'
 
-            if watcherdata[1]['queueType'] == 'RANKED_FLEX_SR':
-                self.flex['tier'] = watcherdata[1]['tier'].lower()
-                self.flex['rank'] = watcherdata[1]['rank']
-                self.flex['lp'] = watcherdata[1]['leaguePoints']
-                self.flex['wins'] = watcherdata[1]['wins']
-                self.flex['losses'] = watcherdata[1]['losses']
-                self.flex['winrate'] = '{:.2f}'.format(self.flex['wins'] / (self.flex['wins'] + self.flex['losses']) * 100) + '%'
-            
-            if watcherdata[1]['queueType'] == 'RANKED_SOLO_5x5':
-                self.solo['tier'] = watcherdata[1]['tier'].lower()
-                self.solo['rank'] = watcherdata[1]['rank']
-                self.solo['lp'] = watcherdata[1]['leaguePoints']
-                self.solo['wins'] = watcherdata[1]['wins']
-                self.solo['losses'] = watcherdata[1]['losses']
-                self.solo['winrate'] = '{:.2f}'.format(self.solo['wins'] / (self.solo['wins'] + self.solo['losses']) * 100) + '%'
+                if len(watcherdata) > 1:
+                    if watcherdata[1]['queueType'] == 'RANKED_FLEX_SR':
+                        for data in rank_data:
+                            self.flex[data] = watcherdata[1][data]
+                        self.flex['tier'] = self.flex['tier'].lower()
+                        self.flex['winrate'] = '{:.2f}'.format(self.flex['wins'] / (self.flex['wins'] + self.flex['losses']) * 100) + '%'
+                    else:
+                        for data in rank_data:
+                            self.solo[data] = watcherdata[1][data]
+                        self.solo['tier'] = self.solo['tier'].lower()
+                        self.solo['winrate'] = '{:.2f}'.format(self.solo['wins'] / (self.solo['wins'] + self.solo['losses']) * 100) + '%'
 
-        else:
-            self.solo['tier'] = 'none'
-            self.solo['rank'] = 0
-            self.solo['lp'] = 0
-            self.solo['wins'] = 0
-            self.solo['losses'] = 0
-            self.solo['winrate'] = '0%'
-            self.flex['tier'] = 'none'
-            self.flex['rank'] = 0
-            self.flex['lp'] = 0
-            self.flex['wins'] = 0
-            self.flex['losses'] = 0
-            self.flex['winrate'] = '0%'
+            else:
+                for data in rank_data:
+                    self.solo[data] = 0
+                    self.flex[data] = 0
+                self.solo['data'] = 0
+                self.flex['winrate'] = 0
 
-        matches = watcher.match.matchlist_by_puuid(server, self.data['puuid'], 0, 5)
-        self.matches_list = []
-        for match in matches:
-            match = Match(server, match)
-            self.matches_list.append(match)
-        self.save()
+            # assign matches list
+            matches = watcher.match.matchlist_by_puuid(server, self.data['puuid'], 0, 5)
+            self.matches_list = []
+            for match in matches:
+                match = Match(server, match)
+                self.matches_list.append(match)
 
-    
-    def save(self):
-        file = open('app/static/users/' + self.username + '.pickle', 'wb')
+            # save instance
+            self.save()
+
+        except ApiError as err:
+            if err.response.status_code == 429:
+                self.error = 429
+            elif err.response.status_code == 404:
+                self.error = 404
+            else:
+                raise
+        
+
+    def save(self): 
+        path = os.getcwd() + '/app/static/users/' + self.username + '.pickle'
+        file = open(path, 'wb')
         file.write(pickle.dumps(self.__dict__))
         file.close()
     
     def load(self):
-        file = open('app/static/users/' + self.username + '.pickle','rb')
+        path = os.getcwd() + '/app/static/users/' + self.username + '.pickle'
+        file = open(path, 'rb')
         dataPickle = file.read()
         file.close()
 
@@ -112,30 +112,47 @@ class Player:
 
 class Match():
     def __init__(self, server, id):
+        # assign match details
         self.details = watcher.match.by_id(server, id)
+        self.details['info']['teams'][0]['gold'] = 0
+        self.details['info']['teams'][1]['gold'] = 0
+        
+        # match start timer
+        self.game_start = datetime.fromtimestamp(int(self.details['info']['gameStartTimestamp']/1000))
+
+        # assign participants stats
         self.participants = []
-        for row in self.details['info']['participants']:
-            watcherdata = watcher.summoner.by_puuid(server, row['puuid'])
+
+        # automation of participants stats assigning
+        summoner_stats = ['summoner1Id', 'summoner2Id', 'win', 'kills', 'deaths', 'assists', 'totalDamageDealtToChampions',\
+            'totalHealsOnTeammates', 'goldEarned', 'champLevel', 'totalMinionsKilled', 'visionScore']
+        
+        for index, row in enumerate(self.details['info']['participants']):
+            if row['puuid'] != 'BOT':
+                watcherdata = watcher.summoner.by_puuid(server, row['puuid'])
+            else:
+                watcherdata['name'] = 'BOT'
+                watcherdata['summonerLevel'] = 30
+
             participants_row = {}
+            
+            if index <= 4:
+                self.details['info']['teams'][0]['gold'] += row['goldEarned']
+            else:
+                self.details['info']['teams'][1]['gold'] += row['goldEarned']
+
+            for stat in summoner_stats:
+                participants_row[stat] = row[stat]
+                
             participants_row['username'] = watcherdata['name']
             participants_row['level'] = watcherdata['summonerLevel']
             participants_row['champion'] = new_champs_list[str(row['championId'])]
-            participants_row['summoner1'] = row['summoner1Id']
-            participants_row['summoner2'] = row['summoner2Id']
-            participants_row['win'] = row['win']
-            participants_row['kills'] = row['kills']
-            participants_row['deaths'] = row['deaths']
-            participants_row['assists'] = row['assists']
-            participants_row['totalDamageDealt'] = row['totalDamageDealtToChampions']
-            participants_row['totalHealsOnTeammates'] = row['totalHealsOnTeammates']
-            participants_row['goldEarned'] = row['goldEarned']
-            participants_row['champLevel'] = row['champLevel']
-            participants_row['totalMinionsKilled'] = row['totalMinionsKilled']
-            participants_row['visionScore'] = row['visionScore']
+
+            # automation of items assigning
             itemsid = ['item0', 'item1', 'item2', 'item3', 'item4', 'item5']
             for item in itemsid:
                 if row[item] != 0:
                     participants_row[item] = row[item]
 
             self.participants.append(participants_row)
-        
+

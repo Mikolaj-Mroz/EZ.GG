@@ -1,5 +1,9 @@
 {% extends 'index.html.jinja2' %}
 
+{% block title %}
+EZ.GG | {{ profile.data['name'] }}
+{% endblock %}
+
 {% block leftbar %}
 <div class='profile'>
     <div style='color: #5383e8;'>
@@ -52,6 +56,7 @@
     {% for match in stats %}
     <div class='game'>
         {{ match.details['info']['gameMode'] }}
+        {{ match.game_start }}
         {% for player in match.participants %}
         {% if loop.index == 1 or loop.index == 6 %}
         {% if loop.index == 1 and match.participants[0].win %}
@@ -67,11 +72,65 @@
         {% endif %}
             {% if loop.index == 6 %}
             <div class='graph'>
-                <div style='float:left;'>
-                    Blueside kills: {{ match.details['info']['teams'][0]['objectives']['champion']['kills'] }}
+                <div class='team'>
+                    <div class='object'>
+                        <img src="https://s-lol-web.op.gg/images/icon/icon-baron.svg?v=1659335800030" alt="Baron">
+                        {{ match.details['info']['teams'][0]['objectives']['baron']['kills'] }}
+                    </div>
+                    <div class='object'>
+                        <img src="https://s-lol-web.op.gg/images/icon/icon-dragon.svg?v=1659335800030" alt="Dragon">
+                        {{ match.details['info']['teams'][0]['objectives']['dragon']['kills'] }}
+                    </div>
+                    <div class='object'>
+                        <img src="https://s-lol-web.op.gg/images/icon/icon-tower.svg?v=1659335800030" alt="Tower">
+                        {{ match.details['info']['teams'][0]['objectives']['tower']['kills'] }}
+                    </div>
                 </div>
-                <div style='float:right;'>
-                    Redside kills:{{ match.details['info']['teams'][1]['objectives']['champion']['kills'] }}
+                <div class='summary'>
+                    <div class='part'>
+                        <div class='chart-title'>
+                            Total Kills
+                        </div>
+                        <div class='data-left'>
+                            {{ match.details['info']['teams'][0]['objectives']['champion']['kills'] }}
+                        </div>
+                        <div class='data-right'>
+                            {{ match.details['info']['teams'][1]['objectives']['champion']['kills'] }}
+                        </div>
+                        <div class="chart">
+                            <div class="{% if match.participants[1].win %} chart-blue {% else %} chart-red {% endif %}" style="width: {% if match.details['info']['teams'][0]['objectives']['champion']['kills'] != 0 or match.details['info']['teams'][1]['objectives']['champion']['kills'] != 0 %} {{ '%.2f'|format((match.details['info']['teams'][0]['objectives']['champion']['kills'] / (match.details['info']['teams'][0]['objectives']['champion']['kills'] + match.details['info']['teams'][1]['objectives']['champion']['kills']) * 100))|string }}{% else %}0{% endif %}%;"></div>
+                            <div class="{% if match.participants[6].win %} chart-blue {% else %} chart-red {% endif %}" style="width: {% if match.details['info']['teams'][0]['objectives']['champion']['kills'] != 0 or match.details['info']['teams'][1]['objectives']['champion']['kills'] != 0 %} {{ '%.2f'|format((match.details['info']['teams'][1]['objectives']['champion']['kills'] / (match.details['info']['teams'][0]['objectives']['champion']['kills'] + match.details['info']['teams'][1]['objectives']['champion']['kills']) * 100))|string }}{% else %}0{% endif %}%;"></div>
+                        </div>
+                    </div>
+                    <div class='part'>
+                        <div class='chart-title'>
+                            Total Gold
+                        </div>
+                        <div class='data-left'>
+                            {{ match.details['info']['teams'][0]['gold'] }}
+                        </div>
+                        <div class='data-right'>
+                            {{ match.details['info']['teams'][1]['gold'] }}
+                        </div>
+                        <div class="chart">
+                            <div class="{% if match.participants[1].win %} chart-blue {% else %} chart-red {% endif %}" style="width: {% if match.details['info']['teams'][1]['gold'] != 0 or match.details['info']['teams'][0]['gold'] != 0 %} {{ '%.2f'|format(( match.details['info']['teams'][0]['gold'] / (match.details['info']['teams'][0]['gold'] + match.details['info']['teams'][1]['gold']) * 100))|string }}{% else %}0{% endif %}%;"></div>
+                           <div class="{% if match.participants[6].win %} chart-blue {% else %} chart-red {% endif %}" style="width: {% if match.details['info']['teams'][1]['gold'] != 0 or match.details['info']['teams'][0]['gold'] != 0 %} {{ '%.2f'|format(( match.details['info']['teams'][1]['gold'] / (match.details['info']['teams'][0]['gold'] + match.details['info']['teams'][1]['gold']) * 100))|string }}{% else %}0{% endif %}%;"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class='team'>
+                    <div class='object'>
+                        <img src="https://s-lol-web.op.gg/images/icon/icon-baron-r.svg?v=1659335800030" alt="Baron">
+                        {{ match.details['info']['teams'][1]['objectives']['baron']['kills'] }}
+                    </div>
+                    <div class='object'>
+                        <img src="https://s-lol-web.op.gg/images/icon/icon-dragon-r.svg?v=1659335800030" alt="Dragon">
+                        {{ match.details['info']['teams'][1]['objectives']['dragon']['kills'] }}
+                    </div>
+                    <div class='object'>
+                        <img src="https://s-lol-web.op.gg/images/icon/icon-tower-r.svg?v=1659335800030" alt="Tower">
+                        {{ match.details['info']['teams'][1]['objectives']['tower']['kills'] }}
+                    </div>
                 </div>
             </div>
             {% endif %}
@@ -223,8 +282,9 @@
         {% endfor %}
     </div>
     {% endfor %}
-
+</div>
 <script>
+
 new Chart("soloQ", {
   type: "doughnut",
   data: {

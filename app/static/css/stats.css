@@ -103,9 +103,9 @@ img{
 .profile{
     margin-left: auto;
     margin-right: 0;
-    margin-top: 285px;
+    margin-top: 0px;
     margin-bottom: 20px;
-    width: fit-content;
+    width: 335px;
 }
 
 .profile div{
@@ -121,12 +121,148 @@ img{
 .lose .playertr{
     background-color: rgba(232, 64, 87, 0.2);
 }
-hr{
+
+div hr{
     border: none;
-    border-bottom: 2px solid black;
+    border-bottom: 2px solid #1c1c1f;
 }
+
+small hr{
+    border: none;
+    border-bottom: 2px solid #31313c;
+}
+
 .graph{
     background-color: #282830;
     width: 810px;
+    height: 56px;
+    display: flex;
+    display: flex;
+    -webkit-box-pack: justify;
+    justify-content: space-between;
+    -webkit-box-align: center;
+    align-items: center;
+}
+.graph .team:nth-of-type(1) {
+    padding-right: 0px;
+    padding-left: 16px;
+    text-align: left;
+    border-left: 1px solid transparent;
+    display: table-cell;
+}
+
+.graph .team:nth-of-type(3) {
+    padding-right: 16px;
+    border-right: 1px solid transparent;
+    border-top: 1px solid transparent;
+    display: table-cell;
+}
+
+.team .object:nth-of-type(1){
+    display: inline-block;
+    font-size: 12px;
+}
+
+.team .object:nth-of-type(2){
+    display: inline-block;
+    font-size: 12px;
+    margin-left: 16px;
+}
+
+.team .object:nth-of-type(3){
+    display: inline-block;
+    font-size: 12px;
+    margin-left: 16px;
+}
+
+.summary{
+    width: 405px;
+    height: 56px;
+}
+
+.summary .part:nth-of-type(1){
     height: 32px;
+    display: flex;
+}
+
+.summary .part:nth-of-type(2){
+    height: 24px;
+    display: flex;
+}
+
+.chart-blue{
+    background-color: rgb(83, 131, 232);
+    height: 16px;
+}
+.chart-red {
+    background-color: rgb(232, 64, 87);
+    height: 16px;
+}
+
+.chart{
+    position: relative;
+    flex: 0 1 405px;
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    margin: 0px 3px;
+    height: 16px;
+    margin-top: 0px;
+}
+
+.part .chart-title{
+    position: absolute;
+    top: 8px;
+    left: calc(50% - 30px);
+    text-align: center;
+    line-height: 16px;
+    font-size: 12px;
+    color: white;
+    z-index: 999;
+}
+
+.part{
+    position: relative;
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+}
+
+.data-left{
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    text-align: center;
+    line-height: 16px;
+    font-size: 12px;
+    color: white;
+    z-index: 999;
+}
+
+.data-right{
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    text-align: center;
+    line-height: 16px;
+    font-size: 12px;
+    color: white;
+    z-index: 999;
+}
+
+.part:nth-child(2) .chart{
+    margin-top: 0px;
+    margin-bottom: 10px;
+}
+
+.part:nth-child(2) .chart-title{
+    top: 0px;
+}
+
+.part:nth-child(2) .data-left{
+    top: 0px;
+}
+
+.part:nth-child(2) .data-right{
+    top: 0px;
 }
