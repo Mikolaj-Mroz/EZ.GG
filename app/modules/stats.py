@@ -100,13 +100,13 @@ class Player:
 
     
     def save(self): 
-        path = os.getcwd() + '../static/users/' + self.username + '.pickle'
+        path = os.getcwd() + '/app/static/users/' + self.username + '.pickle'
         file = open(path, 'wb')
         file.write(pickle.dumps(self.__dict__))
         file.close()
     
     def load(self):
-        path = os.getcwd() + '../static/users/' + self.username + '.pickle'
+        path = os.getcwd() + '/app/static/users/' + self.username + '.pickle'
         file = open(path, 'rb')
         dataPickle = file.read()
         file.close()
