@@ -1,5 +1,9 @@
 {% extends 'index.html.jinja2' %}
 
+{% block title %}
+EZ.GG | {{ profile.data['name'] }}
+{% endblock %}
+
 {% block leftbar %}
 <div class='profile'>
     <div style='color: #5383e8;'>
@@ -52,6 +56,7 @@
     {% for match in stats %}
     <div class='game'>
         {{ match.details['info']['gameMode'] }}
+        {{ match.game_start }}
         {% for player in match.participants %}
         {% if loop.index == 1 or loop.index == 6 %}
         {% if loop.index == 1 and match.participants[0].win %}
@@ -93,8 +98,8 @@
                             {{ match.details['info']['teams'][1]['objectives']['champion']['kills'] }}
                         </div>
                         <div class="chart">
-                            <div class="{% if match.participants[1].win %} chart-blue {% else %} chart-red {% endif %}" style="width: {{ '%.2f'|format((match.details['info']['teams'][0]['objectives']['champion']['kills'] / (match.details['info']['teams'][0]['objectives']['champion']['kills'] + match.details['info']['teams'][1]['objectives']['champion']['kills']) * 100))|string }}%;"></div>
-                            <div class="{% if match.participants[6].win %} chart-blue {% else %} chart-red {% endif %}" style="width: {{ '%.2f'|format((match.details['info']['teams'][1]['objectives']['champion']['kills'] / (match.details['info']['teams'][0]['objectives']['champion']['kills'] + match.details['info']['teams'][1]['objectives']['champion']['kills']) * 100))|string }}%;"></div>
+                            <div class="{% if match.participants[1].win %} chart-blue {% else %} chart-red {% endif %}" style="width: {% if match.details['info']['teams'][0]['objectives']['champion']['kills'] != 0 or match.details['info']['teams'][1]['objectives']['champion']['kills'] != 0 %} {{ '%.2f'|format((match.details['info']['teams'][0]['objectives']['champion']['kills'] / (match.details['info']['teams'][0]['objectives']['champion']['kills'] + match.details['info']['teams'][1]['objectives']['champion']['kills']) * 100))|string }}{% else %}0{% endif %}%;"></div>
+                            <div class="{% if match.participants[6].win %} chart-blue {% else %} chart-red {% endif %}" style="width: {% if match.details['info']['teams'][0]['objectives']['champion']['kills'] != 0 or match.details['info']['teams'][1]['objectives']['champion']['kills'] != 0 %} {{ '%.2f'|format((match.details['info']['teams'][1]['objectives']['champion']['kills'] / (match.details['info']['teams'][0]['objectives']['champion']['kills'] + match.details['info']['teams'][1]['objectives']['champion']['kills']) * 100))|string }}{% else %}0{% endif %}%;"></div>
                         </div>
                     </div>
                     <div class='part'>
@@ -108,8 +113,8 @@
                             {{ match.details['info']['teams'][1]['gold'] }}
                         </div>
                         <div class="chart">
-                            <div class="{% if match.participants[1].win %} chart-blue {% else %} chart-red {% endif %}" style="width: {{ '%.2f'|format(( match.details['info']['teams'][0]['gold'] / (match.details['info']['teams'][0]['gold'] + match.details['info']['teams'][1]['gold']) * 100))|string }}%;"></div>
-                           <div class="{% if match.participants[6].win %} chart-blue {% else %} chart-red {% endif %}" style="width: {{ '%.2f'|format(( match.details['info']['teams'][1]['gold'] / (match.details['info']['teams'][0]['gold'] + match.details['info']['teams'][1]['gold']) * 100))|string }}%;"></div>
+                            <div class="{% if match.participants[1].win %} chart-blue {% else %} chart-red {% endif %}" style="width: {% if match.details['info']['teams'][1]['gold'] != 0 or match.details['info']['teams'][0]['gold'] != 0 %} {{ '%.2f'|format(( match.details['info']['teams'][0]['gold'] / (match.details['info']['teams'][0]['gold'] + match.details['info']['teams'][1]['gold']) * 100))|string }}{% else %}0{% endif %}%;"></div>
+                           <div class="{% if match.participants[6].win %} chart-blue {% else %} chart-red {% endif %}" style="width: {% if match.details['info']['teams'][1]['gold'] != 0 or match.details['info']['teams'][0]['gold'] != 0 %} {{ '%.2f'|format(( match.details['info']['teams'][1]['gold'] / (match.details['info']['teams'][0]['gold'] + match.details['info']['teams'][1]['gold']) * 100))|string }}{% else %}0{% endif %}%;"></div>
                         </div>
                     </div>
                 </div>
@@ -279,6 +284,7 @@
     {% endfor %}
 </div>
 <script>
+
 new Chart("soloQ", {
   type: "doughnut",
   data: {

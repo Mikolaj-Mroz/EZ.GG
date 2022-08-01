@@ -2,6 +2,8 @@ from flask import url_for
 from riotwatcher import LolWatcher, ApiError
 import pickle
 import os
+import time
+from datetime import datetime
 
 # config
 api_key = 'RGAPI-e51c2666-0a73-40f2-90ed-4bf95bac1bc2'
@@ -98,6 +100,7 @@ class Match():
         self.details = watcher.match.by_id(server, id)
         self.details['info']['teams'][0]['gold'] = 0
         self.details['info']['teams'][1]['gold'] = 0
+        self.game_start = datetime.fromtimestamp(int(self.details['info']['gameStartTimestamp']/1000))
         self.participants = []
         for index, row in enumerate(self.details['info']['participants']):
             watcherdata = watcher.summoner.by_puuid(server, row['puuid'])

@@ -1,6 +1,15 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{% block title %}{% endblock %}</title>
+    <meta name="description" content="League of Legends players stat checker">
+    <meta name="author" content="Mikołaj Mróz">
+
+    <meta property="og:title" content="EZ.GG - Check your LOL stats!">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="http://lol-stats.eu-central-1.elasticbeanstalk.com/">
+    <meta property="og:description" content="League of Legends players stat checker">
+    <meta property="og:image" content="{{url_for('static', filename='meta/background.jpg')}}">
 
     <!-- Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -25,7 +34,7 @@
         <div class='top'>
             <div class='content'>
                 <div class='title'>
-                    <a href='{{url_for("index")}}'>EZ.GG</a>
+                    <a href='{{url_for("index")}}'><img src="{{url_for('static', filename='meta/logo.png')}}"></a>
                 </div>
                 <form method="POST" action="/">
                     {{ form.csrf_token }}

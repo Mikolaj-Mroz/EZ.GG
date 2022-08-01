@@ -6,6 +6,7 @@ import pickle
 
 
 
+
 @app.route('/<server>/<username>', methods=['GET','POST'])
 def stats(server, username):
     player_stats = Player(username, server)
