@@ -7,7 +7,7 @@ from datetime import datetime
 
 
 # config
-api_key = 'RGAPI-e51c2666-0a73-40f2-90ed-4bf95bac1bc2'
+api_key = 'your_api_key'
 watcher = LolWatcher(api_key)
 
 # download champion names from data dragon
