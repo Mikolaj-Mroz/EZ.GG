@@ -32,7 +32,7 @@ class Player:
         self.solo = {}
         self.flex = {}
         watcherdata = watcher.league.by_summoner(server, self.data['id'])
-        if watcherdata:
+        if len(watcherdata) > 0:
             if watcherdata[0]['queueType'] == 'RANKED_SOLO_5x5':
                 self.solo['tier'] = watcherdata[0]['tier'].lower()
                 self.solo['rank'] = watcherdata[0]['rank']
@@ -60,7 +60,7 @@ class Player:
                 self.solo['wins'] = 0
                 self.solo['losses'] = 0
                 self.solo['winrate'] = '0%'
-            if watcherdata[1]:
+            if len(watcherdata) > 1:
                 if watcherdata[1]['queueType'] == 'RANKED_FLEX_SR':
                     self.flex['tier'] = watcherdata[1]['tier'].lower()
                     self.flex['rank'] = watcherdata[1]['rank']
