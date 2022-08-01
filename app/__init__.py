@@ -7,6 +7,6 @@ from flask import Flask
 # configuration
 
 app = Flask(__name__)
-app.secret_key='tekst'
+app.config.from_pyfile('config.py')
 
 from app.modules import routes
