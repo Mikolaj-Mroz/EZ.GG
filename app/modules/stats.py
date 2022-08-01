@@ -4,7 +4,7 @@ import pickle
 import os
 
 # config
-api_key = 'RGAPI-7d500e80-ac9f-4b89-8b12-b94a307a5cea'
+api_key = 'RGAPI-e51c2666-0a73-40f2-90ed-4bf95bac1bc2'
 watcher = LolWatcher(api_key)
 
 # download champion names from data dragon
@@ -31,65 +31,44 @@ class Player:
         self.data = watcher.summoner.by_name(server, username)
         self.solo = {}
         self.flex = {}
+        rank_data = ['tier','rank', 'leaguePoints', 'wins', 'losses']
         watcherdata = watcher.league.by_summoner(server, self.data['id'])
+        
         if len(watcherdata) > 0:
             if watcherdata[0]['queueType'] == 'RANKED_SOLO_5x5':
-                self.solo['tier'] = watcherdata[0]['tier'].lower()
-                self.solo['rank'] = watcherdata[0]['rank']
-                self.solo['lp'] = watcherdata[0]['leaguePoints']
-                self.solo['wins'] = watcherdata[0]['wins']
-                self.solo['losses'] = watcherdata[0]['losses']
+                for data in rank_data:
+                    self.solo[data] = watcherdata[0][data]
+                    self.flex[data] = 0
+                self.solo['tier'] = self.solo['tier'].lower()
                 self.solo['winrate'] = '{:.2f}'.format(self.solo['wins'] / (self.solo['wins'] + self.solo['losses']) * 100) + '%'
-                self.flex['tier'] = 'none'
-                self.flex['rank'] = 0
-                self.flex['lp'] = 0
-                self.flex['wins'] = 0
-                self.flex['losses'] = 0
-                self.flex['winrate'] = '0%'
-
-            elif watcherdata[0]['queueType'] == 'RANKED_FLEX_SR':
-                self.flex['tier'] = watcherdata[0]['tier'].lower()
-                self.flex['rank'] = watcherdata[0]['rank']
-                self.flex['lp'] = watcherdata[0]['leaguePoints']
-                self.flex['wins'] = watcherdata[0]['wins']
-                self.flex['losses'] = watcherdata[0]['losses']
+                self.flex['winrate'] = 0
+            else:
+                for data in rank_data:
+                    self.flex[data] = watcherdata[0][data]
+                    self.solo[data] = 0
+                self.flex['tier'] = self.flex['tier'].lower()
                 self.flex['winrate'] = '{:.2f}'.format(self.flex['wins'] / (self.flex['wins'] + self.flex['losses']) * 100) + '%'
-                self.solo['tier'] = 'none'
-                self.solo['rank'] = 0
-                self.solo['lp'] = 0
-                self.solo['wins'] = 0
-                self.solo['losses'] = 0
-                self.solo['winrate'] = '0%'
+                self.solo['winrate'] = 0
+
+
             if len(watcherdata) > 1:
                 if watcherdata[1]['queueType'] == 'RANKED_FLEX_SR':
-                    self.flex['tier'] = watcherdata[1]['tier'].lower()
-                    self.flex['rank'] = watcherdata[1]['rank']
-                    self.flex['lp'] = watcherdata[1]['leaguePoints']
-                    self.flex['wins'] = watcherdata[1]['wins']
-                    self.flex['losses'] = watcherdata[1]['losses']
+                    for data in rank_data:
+                        self.flex[data] = watcherdata[1][data]
+                    self.flex['tier'] = self.flex['tier'].lower()
                     self.flex['winrate'] = '{:.2f}'.format(self.flex['wins'] / (self.flex['wins'] + self.flex['losses']) * 100) + '%'
-                
-                if watcherdata[1]['queueType'] == 'RANKED_SOLO_5x5':
-                    self.solo['tier'] = watcherdata[1]['tier'].lower()
-                    self.solo['rank'] = watcherdata[1]['rank']
-                    self.solo['lp'] = watcherdata[1]['leaguePoints']
-                    self.solo['wins'] = watcherdata[1]['wins']
-                    self.solo['losses'] = watcherdata[1]['losses']
+                else:
+                    for data in rank_data:
+                        self.solo[data] = watcherdata[1][data]
+                    self.solo['tier'] = self.solo['tier'].lower()
                     self.solo['winrate'] = '{:.2f}'.format(self.solo['wins'] / (self.solo['wins'] + self.solo['losses']) * 100) + '%'
 
         else:
-            self.solo['tier'] = 'none'
-            self.solo['rank'] = 0
-            self.solo['lp'] = 0
-            self.solo['wins'] = 0
-            self.solo['losses'] = 0
-            self.solo['winrate'] = '0%'
-            self.flex['tier'] = 'none'
-            self.flex['rank'] = 0
-            self.flex['lp'] = 0
-            self.flex['wins'] = 0
-            self.flex['losses'] = 0
-            self.flex['winrate'] = '0%'
+            for data in rank_data:
+                self.solo[data] = 0
+                self.flex[data] = 0
+            self.solo['data'] = 0
+            self.flex['winrate'] = 0
 
         matches = watcher.match.matchlist_by_puuid(server, self.data['puuid'], 0, 5)
         self.matches_list = []
