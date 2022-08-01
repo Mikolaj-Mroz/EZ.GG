@@ -60,22 +60,22 @@ class Player:
                 self.solo['wins'] = 0
                 self.solo['losses'] = 0
                 self.solo['winrate'] = '0%'
-
-            if watcherdata[1]['queueType'] == 'RANKED_FLEX_SR':
-                self.flex['tier'] = watcherdata[1]['tier'].lower()
-                self.flex['rank'] = watcherdata[1]['rank']
-                self.flex['lp'] = watcherdata[1]['leaguePoints']
-                self.flex['wins'] = watcherdata[1]['wins']
-                self.flex['losses'] = watcherdata[1]['losses']
-                self.flex['winrate'] = '{:.2f}'.format(self.flex['wins'] / (self.flex['wins'] + self.flex['losses']) * 100) + '%'
-            
-            if watcherdata[1]['queueType'] == 'RANKED_SOLO_5x5':
-                self.solo['tier'] = watcherdata[1]['tier'].lower()
-                self.solo['rank'] = watcherdata[1]['rank']
-                self.solo['lp'] = watcherdata[1]['leaguePoints']
-                self.solo['wins'] = watcherdata[1]['wins']
-                self.solo['losses'] = watcherdata[1]['losses']
-                self.solo['winrate'] = '{:.2f}'.format(self.solo['wins'] / (self.solo['wins'] + self.solo['losses']) * 100) + '%'
+            if watcherdata[1]:
+                if watcherdata[1]['queueType'] == 'RANKED_FLEX_SR':
+                    self.flex['tier'] = watcherdata[1]['tier'].lower()
+                    self.flex['rank'] = watcherdata[1]['rank']
+                    self.flex['lp'] = watcherdata[1]['leaguePoints']
+                    self.flex['wins'] = watcherdata[1]['wins']
+                    self.flex['losses'] = watcherdata[1]['losses']
+                    self.flex['winrate'] = '{:.2f}'.format(self.flex['wins'] / (self.flex['wins'] + self.flex['losses']) * 100) + '%'
+                
+                if watcherdata[1]['queueType'] == 'RANKED_SOLO_5x5':
+                    self.solo['tier'] = watcherdata[1]['tier'].lower()
+                    self.solo['rank'] = watcherdata[1]['rank']
+                    self.solo['lp'] = watcherdata[1]['leaguePoints']
+                    self.solo['wins'] = watcherdata[1]['wins']
+                    self.solo['losses'] = watcherdata[1]['losses']
+                    self.solo['winrate'] = '{:.2f}'.format(self.solo['wins'] / (self.solo['wins'] + self.solo['losses']) * 100) + '%'
 
         else:
             self.solo['tier'] = 'none'
