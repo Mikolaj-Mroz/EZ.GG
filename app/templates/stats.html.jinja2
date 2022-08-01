@@ -1,0 +1,264 @@
+{% extends 'index.html.jinja2' %}
+
+{% block leftbar %}
+<div class='profile'>
+    <div style='color: #5383e8;'>
+        {{ profile.data['name'] }}
+    </div>
+    <div>
+        <img src='https://opgg-static.akamaized.net/images/profile_icons/profileIcon{{profile.data["profileIconId"]}}.jpg' width=300> <br>
+        <span style='color: #5383e8;'>Level:</span> <span style='color: white;'>{{ profile.data['summonerLevel']}}</span> <br>
+    </div>
+    {% if profile.solo['rank'] != 0 %}
+    <div>
+        <span style='color:white; font-size:24px;'>Ranked Solo Games </span> <br>
+        <hr>
+        <img src='https://opgg-static.akamaized.net/images/medals_new/{{ profile.solo["tier"] }}.png' width=100> <br>
+        <span style='color: #5383e8;'>Rank:</span> <span style='color: white;'>{{ profile.solo['tier'] }} {{ profile.solo['rank'] }}</span> <br>
+        <span style='color: #5383e8;'>W/L:</span> <span style='color: white;'>{{ profile.solo['wins'] }}/{{ profile.solo['losses'] }}</span> <br>
+        <span style='color: #5383e8;'>Winrate:</span> <span style='color: white;'>{{ profile.solo['winrate'] }}</span> <br>
+        <canvas id="soloQ" style="width:100%;max-width:600px"></canvas>
+    </div>
+    {% endif %}
+    {% if profile.flex['rank'] != 0 %}
+    <div>
+        <span style='color:white; font-size:24px;'>Ranked Flex Games </span> <br>
+        <hr>
+        <img src='https://opgg-static.akamaized.net/images/medals_new/{{ profile.flex["tier"] }}.png' width=100> <br>
+        <span style='color: #5383e8;'>Rank:</span> <span style='color: white;'>{{ profile.flex['tier'] }} {{ profile.flex['rank'] }}</span> <br>
+        <span style='color: #5383e8;'>W/L:</span> <span style='color: white;'>{{ profile.flex['wins'] }}/{{ profile.flex['losses'] }}</span> <br>
+        <span style='color: #5383e8;'>Winrate:</span> <span style='color: white;'>{{ profile.flex['winrate'] }}</span> <br>
+        <canvas id="flexQ" style="width:100%;max-width:600px"></canvas>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+
+{% block content %}
+<div class='gamelist'>
+    <div class='label'>
+        <section>
+            <div>
+                Last 5 games
+            </div>
+            <div>
+                <form class='refresh' method="post">
+                    <input class='refreshBtn'  type="submit" name="refresh" value="Refresh">
+                </form>
+            </div>
+        </section>
+    </div>
+    {% for match in stats %}
+    <div class='game'>
+        {{ match.details['info']['gameMode'] }}
+        {% for player in match.participants %}
+        {% if loop.index == 1 or loop.index == 6 %}
+        {% if loop.index == 1 and match.participants[0].win %}
+        <div class='win'>
+        {% elif loop.index == 1 and not match.participants[0].win %}
+        <div class='lose'>
+        {% elif loop.index == 6 and match.participants[5].win %}
+        <div class='win'>
+        {% else %}
+        <div class='lose'>
+        {% endif %}
+        <table>
+        {% endif %}
+            {% if loop.index == 6 %}
+            <div class='graph'>
+                <div style='float:left;'>
+                    Blueside kills: {{ match.details['info']['teams'][0]['objectives']['champion']['kills'] }}
+                </div>
+                <div style='float:right;'>
+                    Redside kills:{{ match.details['info']['teams'][1]['objectives']['champion']['kills'] }}
+                </div>
+            </div>
+            {% endif %}
+            {% if loop.index == 1 or loop.index == 6 %}
+            <thead>
+                <tr>
+                    <th>
+                        {% if loop.index == 1 and match.participants[0].win %}
+                        <a style='color:#5383e8;'>Win</a>
+                        {% elif loop.index == 6 and match.participants[5].win %}
+                        <a style='color:#5383e8;'>Win</a>
+                        {% else %}
+                        <a style='color:#e84057;'>Lose</a>
+                        {% endif %}
+                    </th>
+                    <th>
+                        KDA
+                    </th>
+                    <th>
+                        Damage
+                    </th>
+                    <th>
+                        Vision
+                    </th>
+                    <th>
+                        CS
+                    </th>
+                    <th>
+                        Items
+                    </th>
+                </tr>
+            </thead>
+            {% endif %}
+            {% if loop.index == 1 or loop.index == 6 %}
+            <tbody>
+            {% endif %}
+                {% if player['username'] == profile.data['name'] %}
+                <tr class='playertr'>
+                {% else %}
+                <tr>
+                {% endif %}
+                    <td class='username'>
+                        <div style='float: left;'>
+                            <img src='https://opgg-static.akamaized.net/images/lol/champion/{{ player["champion"] }}.png' width='32'>
+                        </div>
+                        <div>
+                            <div style='margin-left:38px; height:24px; line-height:22px;'>
+                            <a href='/eun1/{{player["username"]}}'>{{ player['username'] }}</a>
+                            </div>
+                            <div style='color:#9e9eb1; margin-left:38px; line-height:0px;'>
+                            Level: {{ player['level'] }}
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            {{ player['kills']}} / {{ player['deaths']}} / {{ player['assists'] }}
+                        </div>
+                        <div>
+                            {% if player['deaths'] != 0 %}
+                            {% set kda = (player['kills'] + player['assists']) / player['deaths'] %}
+                            {% else %}
+                            {% set kda = (player['kills'] + player['assists']) / 1%}}
+                            {% endif %}
+                            {% if kda >= 5 %}
+                            <b style='color:#ff8200;'>
+                            {% elif kda >= 4 %}
+                            <b style='color:#0093ff;'>
+                            {% elif kda >= 3 %}
+                            <b style='color:#00bba3;'>
+                            {% else %}
+                            <b>
+                            {% endif %}
+                            {{ "%.2f"|format(kda) }}:1</b>
+                        </div>
+                    </td>
+                    <td>
+                        {{ player['totalDamageDealt'] }}
+                    </td>
+                    <td>
+                        {{ player['visionScore'] }}
+                    </td>
+                    <td>
+                        {{ player['totalMinionsKilled'] }}
+                    </td>
+                    <td>
+                        <div class='items'>
+                            {% if player['item0']|string|length %}
+                            <div class='item'> 
+                                <img src='https://opgg-static.akamaized.net/images/lol/item/{{ player["item0"] }}.png' width='22'>
+                            </div class='item'>
+                            {% else %}
+                            <div class='item-none'>
+                            </div>
+                            {% endif %}
+                            {% if player['item1']|string|length %}
+                            <div class='item'> 
+                                <img src='https://opgg-static.akamaized.net/images/lol/item/{{ player["item1"] }}.png' width='22'>
+                            </div class='item'>
+                            {% else %}
+                            <div class='item-none'>
+                            </div>
+                            {% endif %}
+                            {% if player['item2']|string|length %}
+                            <div class='item'> 
+                                <img src='https://opgg-static.akamaized.net/images/lol/item/{{ player["item2"] }}.png' width='22'>
+                            </div class='item'>
+                            {% else %}
+                            <div class='item-none'>
+                            </div>
+                            {% endif %}
+                            {% if player['item3']|string|length %}
+                            <div class='item'> 
+                                <img src='https://opgg-static.akamaized.net/images/lol/item/{{ player["item3"] }}.png' width='22'>
+                            </div class='item'>
+                            {% else %}
+                            <div class='item-none'>
+                            </div>
+                            {% endif %}
+                            {% if player['item4']|string|length %}
+                            <div class='item'> 
+                                <img src='https://opgg-static.akamaized.net/images/lol/item/{{ player["item4"] }}.png' width='22'>
+                            </div class='item'>
+                            {% else %}
+                            <div class='item-none'>
+                            </div>
+                            {% endif %}
+                            {% if player['item5']|string|length %}
+                            <div class='item'> 
+                                <img src='https://opgg-static.akamaized.net/images/lol/item/{{ player["item5"] }}.png' width='22'>
+                            </div class='item'>
+                            {% else %}
+                            <div class='item-none'>
+                            </div>
+                            {% endif %}
+                           
+                        </div>
+                    </td>
+                </tr>
+            {% if loop.index == 5 or loop.index == 10 %}
+            </tbody>
+            {% endif %}
+        {% if loop.index == 5 or loop.index == 10 %}
+        </table>
+        </div>
+        {% endif %}
+        {% if loop.index == 5%}
+        {% endif %}
+        {% endfor %}
+    </div>
+    {% endfor %}
+
+<script>
+new Chart("soloQ", {
+  type: "doughnut",
+  data: {
+    labels: ['Win','Lose'],
+    datasets: [{
+        borderWidth: 0,
+        backgroundColor: [  "rgb(83, 131, 232)", "rgb(232, 64, 87)",],
+        data: ['{{ profile.solo['wins'] }}', '{{ profile.solo['losses'] }}']
+    }]
+  },
+  options: {
+    title: {
+      display: true,
+      text: "Winrate"
+    }
+  }
+});
+
+new Chart("flexQ", {
+  type: "doughnut",
+  data: {
+    labels: ['Win','Lose'],
+    datasets: [{
+        borderWidth: 0,
+        backgroundColor: [  "rgb(83, 131, 232)", "rgb(232, 64, 87)",],
+        data: ['{{ profile.flex['wins'] }}', '{{ profile.flex['losses'] }}']
+    }]
+  },
+  options: {
+    title: {
+      display: true,
+      text: "Winrate"
+    }
+  }
+});
+</script>
+{% endblock %}

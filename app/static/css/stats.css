@@ -1,0 +1,132 @@
+th{
+    font-size: 12px;
+}
+thead{
+    height: 32px;
+    background-color:#31313c;
+}
+tbody tr{
+    height: 42px;
+}
+td{
+    min-width:120px;
+    text-align:center;
+    font-size:12px;
+    padding: 4px 0px 3px;
+    margin: 0px;
+    vertical-align: middle;
+}
+tr{
+    margin-top: 8px;
+    margin-left: 8px;
+}
+table{
+    border-spacing:0px;
+}
+body{
+    background-color:#1c1c1f;
+    color:#9e9eb1;
+}
+.game{
+    background-color:#31313c;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+.label{
+    background-color:#31313c;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+.win{
+    background-color:#28344e;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+.lose{
+    background-color:#59343b;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+.username{
+    padding-left: 5px;
+    color:white;
+    text-align: left;
+    width: 120px;
+    min-width: 160px;
+}
+.gamelist{
+    margin: auto;
+    width: 830px;
+}
+.items{
+    width: 150px;
+    padding: 8px;
+}
+.item{
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+}
+.item-none{
+    background-color:rgba(255,255,255,0.2);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    border-radius: 3px;
+}
+img{
+    border-radius: 3px;
+}
+.refresh{
+    width: 70px;
+    margin: 0;
+    margin-left: auto;
+    margin-right: 0;
+    height: 10px;
+    padding: 0;
+}
+.refreshBtn{
+    color: white;
+    background-color: #5383e8;
+    margin: auto;
+    border-radius: 5px;
+    height: 19px;
+    width: 60px;
+}
+
+.label section div{
+    flex-basis: 365px;
+}
+
+.profile{
+    margin-left: auto;
+    margin-right: 0;
+    margin-top: 285px;
+    margin-bottom: 20px;
+    width: fit-content;
+}
+
+.profile div{
+    background-color:#31313c;
+    padding: 10px;
+    text-align: center;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+.win .playertr{
+    background-color: rgba(83, 131, 232, 0.2);
+}
+.lose .playertr{
+    background-color: rgba(232, 64, 87, 0.2);
+}
+hr{
+    border: none;
+    border-bottom: 2px solid black;
+}
+.graph{
+    background-color: #282830;
+    width: 810px;
+    height: 32px;
+}

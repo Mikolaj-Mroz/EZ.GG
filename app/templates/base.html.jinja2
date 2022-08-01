@@ -1,0 +1,93 @@
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;900&display=swap" rel="stylesheet">
+    
+    <!-- CSS Style--->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/stats.css') }}">
+
+    <!--- Charts --->
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+    </script>
+</head>
+<body>
+    <div class='parent'>
+        <div class='left'>
+        {% block leftbar %}
+        {% endblock %}
+        </div>
+        <div class='center'>
+            <div class='content'>
+                <div class='title'>
+                    <a href='http://127.0.0.1:5000'>OP.GG</a>
+                </div>
+                <form method="POST" action="/">
+                    {{ form.csrf_token }}
+                    <div style='float: left; width:250px; margin-left: 30px; border-right: 1px solid black; height:40px;'>
+                        <div class='baselabel'>
+                            {{ form.server.label }} 
+                        </div>
+                        <div>
+                            {{ form.server}}
+                        </div>
+                    </div>
+                    <div style='margin-left: 12px; float: left; width:450px; height:40px;'>
+                        <div class='baselabel'>
+                            {{ form.username.label }}
+                        </div>
+                        <div>
+                            {{ form.username(size=20) }}
+                        </div>
+                    </div>
+                </form>
+                <div style='text-align: center; font-weight:400;'>
+                    A <a href='https://op.gg'>OP.GG</a> clone created by <a href='https://github.com/Mikolaj-Mroz'>Mikołaj Mróz</a> <br>
+                    Original design created by <a href='https://op.gg'>OP.GG</a>
+                </div>
+            </div>
+            {% block content %}{% endblock %}
+            <footer>
+                <section>
+                    <div>
+                        OP.GG <br>
+                        <br>
+                        About OP.GG <br>
+                        Company <br>
+                        Blog <br>
+                        Logo history <br>
+                    </div>
+                    <div>
+                        Products <br>
+                        <br>
+                        League of Legends <br>
+                        Duo <br>
+                        QWER <br>
+                        Valorant <br>
+                        PUBG <br>
+                    </div>
+                    <div>
+                        Apps <br>
+                        <br>
+                        OP.GG Android App <br>
+                        OP.GG iOS App <br>
+                        IFI.GG Android App <br>
+                        IFI.GG iOS App <br>
+                    </div>
+                    <div>
+                        Resources <br>
+                        <br>
+                        Privacy politics <br>
+                        Agreement <br>
+                        Help <br>
+                    </div>
+                </section>
+            </footer>
+        </div>
+    </div>
+</body>
