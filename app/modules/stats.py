@@ -96,10 +96,16 @@ class Player:
 class Match():
     def __init__(self, server, id):
         self.details = watcher.match.by_id(server, id)
+        self.details['info']['teams'][0]['gold'] = 0
+        self.details['info']['teams'][1]['gold'] = 0
         self.participants = []
-        for row in self.details['info']['participants']:
+        for index, row in enumerate(self.details['info']['participants']):
             watcherdata = watcher.summoner.by_puuid(server, row['puuid'])
             participants_row = {}
+            if index <= 4:
+                self.details['info']['teams'][0]['gold'] += row['goldEarned']
+            else:
+                self.details['info']['teams'][1]['gold'] += row['goldEarned']
             participants_row['username'] = watcherdata['name']
             participants_row['level'] = watcherdata['summonerLevel']
             participants_row['champion'] = new_champs_list[str(row['championId'])]
@@ -121,4 +127,3 @@ class Match():
                     participants_row[item] = row[item]
 
             self.participants.append(participants_row)
-        

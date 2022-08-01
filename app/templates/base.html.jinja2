@@ -22,10 +22,10 @@
         {% block leftbar %}
         {% endblock %}
         </div>
-        <div class='center'>
+        <div class='top'>
             <div class='content'>
                 <div class='title'>
-                    <a href='{{url_for("index")}}'>OP.GG</a>
+                    <a href='{{url_for("index")}}'>EZ.GG</a>
                 </div>
                 <form method="POST" action="/">
                     {{ form.csrf_token }}
@@ -47,17 +47,23 @@
                     </div>
                 </form>
                 <div style='text-align: center; font-weight:400;'>
-                    A <a href='https://op.gg'>OP.GG</a> clone created by <a href='https://github.com/Mikolaj-Mroz'>Mikołaj Mróz</a> <br>
-                    Original design created by <a href='https://op.gg'>OP.GG</a>
+                    <small>
+                        A <a href='https://op.gg'>OP.GG</a> clone created by <a href='https://github.com/Mikolaj-Mroz'>Mikołaj Mróz</a> <br>
+                        Original design created by <a href='https://op.gg'>OP.GG</a>
+                    </small>
                 </div>
             </div>
+        </div>
+        <div class='center'>
             {% block content %}{% endblock %}
+        </div>
+        <div class='bot'>
             <footer>
                 <section>
                     <div>
-                        OP.GG <br>
+                        EZ.GG <br>
                         <br>
-                        About OP.GG <br>
+                        About EZ.GG <br>
                         Company <br>
                         Blog <br>
                         Logo history <br>
@@ -74,10 +80,8 @@
                     <div>
                         Apps <br>
                         <br>
-                        OP.GG Android App <br>
-                        OP.GG iOS App <br>
-                        IFI.GG Android App <br>
-                        IFI.GG iOS App <br>
+                        EZ.GG Android App <br>
+                        EZ.GG iOS App <br>
                     </div>
                     <div>
                         Resources <br>
@@ -86,6 +90,12 @@
                         Agreement <br>
                         Help <br>
                     </div>
+                </section>
+                <section style='margin-top:25px; width:1170px;'>
+                    <small>
+                    <hr>
+                        © 2012-2022 EZ.GG. EZ.GG isn’t endorsed by Riot Games and doesn’t reflect the views or opinions of Riot Games or anyone officially involved in producing or managing League of Legends. League of Legends and Riot Games are trademarks or registered trademarks of Riot Games, Inc. League of Legends © Riot Games, Inc.
+                    </small>
                 </section>
             </footer>
         </div>
