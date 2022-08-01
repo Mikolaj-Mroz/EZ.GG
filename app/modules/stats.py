@@ -1,3 +1,4 @@
+from flask import url_for
 from riotwatcher import LolWatcher, ApiError
 import pickle
 
@@ -97,13 +98,13 @@ class Player:
         self.save()
 
     
-    def save(self):
-        file = open('app/static/users/' + self.username + '.pickle', 'wb')
+    def save(self): 
+        file = open(url_for('static', filename=('users/' + self.username + '.pickle' )), 'wb')
         file.write(pickle.dumps(self.__dict__))
         file.close()
     
     def load(self):
-        file = open('app/static/users/' + self.username + '.pickle','rb')
+        file = open(url_for('static', filename=('users/' + self.username + '.pickle' )), 'rb')
         dataPickle = file.read()
         file.close()
 
